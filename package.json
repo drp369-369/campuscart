@@ -1,0 +1,15 @@
+{
+  "name": "campuscart-monorepo",
+  "version": "1.0.0",
+  "description": "CampusCart — College-focused Student Marketplace",
+  "private": true,
+  "scripts": {
+    "dev:server": "npm --prefix campuscart/server run dev",
+    "dev:client": "npm --prefix campuscart/client run dev",
+    "seed": "npm --prefix campuscart/server run seed",
+    "install:all": "npm --prefix campuscart/server install && npm --prefix campuscart/client install"
+  },
+  "keywords": ["student-marketplace", "campuscart", "college-essentials"],
+  "author": "CampusCart Team",
+  "license": "ISC"
+}
