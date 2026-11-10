@@ -1,32 +1,55 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, PlusCircle, LogOut, LogIn, UserPlus, User } from 'lucide-react';
+import { ShoppingBag, PlusCircle, LogOut, LogIn, UserPlus, User, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const { currentUser, isAuthenticated, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Close mobile menu whenever route changes
+  React.useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
+    setMobileMenuOpen(false);
     navigate('/login');
+  };
+
+  const closeMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="nav-brand">
+        <Link to="/" className="nav-brand" onClick={closeMenu}>
           <div className="nav-logo-icon">
             <ShoppingBag size={20} />
           </div>
           <span>CampusCart</span>
         </Link>
 
-        <nav className="nav-links">
-          <Link to="/" className="nav-link">
+        {/* Mobile Hamburger Toggle Button */}
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={mobileMenuOpen}
+        >
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+
+        <nav className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          <Link to="/" className="nav-link" onClick={closeMenu}>
             Home
           </Link>
-          <Link to="/" className="nav-link">
+          <Link to="/" className="nav-link" onClick={closeMenu}>
             Browse
           </Link>
 
@@ -36,7 +59,7 @@ const Navbar = () => {
                 <User size={15} />
                 <span>{currentUser?.name?.split(' ')[0] || 'Student'}</span>
               </div>
-              <Link to="/sell" className="btn btn-primary btn-sm">
+              <Link to="/sell" className="btn btn-primary btn-sm" onClick={closeMenu}>
                 <PlusCircle size={16} />
                 Sell an Item
               </Link>
@@ -52,11 +75,11 @@ const Navbar = () => {
             </>
           ) : (
             <div className="nav-actions">
-              <Link to="/login" className="btn btn-secondary btn-sm" id="nav-login-btn">
+              <Link to="/login" className="btn btn-secondary btn-sm" id="nav-login-btn" onClick={closeMenu}>
                 <LogIn size={16} />
                 Login
               </Link>
-              <Link to="/register" className="btn btn-primary btn-sm" id="nav-register-btn">
+              <Link to="/register" className="btn btn-primary btn-sm" id="nav-register-btn" onClick={closeMenu}>
                 <UserPlus size={16} />
                 Register
               </Link>
