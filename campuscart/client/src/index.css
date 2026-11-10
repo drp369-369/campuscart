@@ -354,18 +354,21 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1rem;
   min-height: calc(100vh - 180px);
+  position: relative;
 }
 
 .auth-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 2.5rem 2rem;
+  padding: 2.75rem 2.25rem;
   width: 100%;
   max-width: 480px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
+  position: relative;
+  z-index: 2;
 }
 
 .auth-header {
@@ -463,16 +466,29 @@ img {
   font-weight: 500;
 }
 
-/* Hero Section */
+/* Hero Section with Modern Startup Aesthetic */
 .hero-section {
-  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
   color: #FFFFFF;
   border-radius: var(--radius-lg);
-  padding: 4rem 2.5rem;
+  padding: 4rem 3rem;
   margin-bottom: 2.5rem;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 20px 40px -15px rgba(30, 27, 75, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.28) 0%, rgba(99, 102, 241, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .hero-content {
@@ -486,21 +502,23 @@ img {
   align-items: center;
   gap: 0.5rem;
   background: rgba(255, 255, 255, 0.12);
-  padding: 0.35rem 0.85rem;
+  padding: 0.4rem 0.95rem;
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   color: #E0E7FF;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .hero-title {
-  font-size: 2.75rem;
+  font-size: 2.85rem;
   font-weight: 800;
   color: #FFFFFF;
   line-height: 1.15;
   margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
 .hero-subtitle {
@@ -510,11 +528,85 @@ img {
   line-height: 1.6;
 }
 
+.hero-trust-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.hero-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: #CBD5E1;
+  font-weight: 500;
+}
+
 .hero-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+/* Seller Avatar & Profile Accents */
+.seller-header-flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.seller-avatar-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+}
+
+.suggested-image-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.suggested-image-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.suggested-image-chip:hover {
+  border-color: var(--primary-500);
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+.suggested-image-chip.active {
+  background-color: var(--primary-500);
+  border-color: var(--primary-500);
+  color: #FFFFFF;
 }
 
 /* Search Bar */
