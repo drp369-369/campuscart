@@ -44,6 +44,19 @@ const Marketplace = () => {
     fetchProducts();
   }, [currentCategory, currentSearch]);
 
+  // Handle smooth scroll when navigating to #browse-section
+  useEffect(() => {
+    if (window.location.hash === '#browse-section') {
+      const timer = setTimeout(() => {
+        const elem = document.getElementById('browse-section');
+        if (elem) {
+          elem.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [window.location.hash]);
+
   const handleCategorySelect = (category) => {
     const params = new URLSearchParams(searchParams);
     if (category === 'All') {
