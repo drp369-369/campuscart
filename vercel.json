@@ -1,39 +1,14 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "npm --prefix campuscart/client run build",
+  "outputDirectory": "campuscart/client/dist",
+  "rewrites": [
     {
-      "src": "campuscart/server/server.js",
-      "use": "@vercel/node"
+      "source": "/api/(.*)",
+      "destination": "/api"
     },
     {
-      "src": "campuscart/client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "campuscart/server/server.js"
-    },
-    {
-      "src": "/items/(.*)",
-      "dest": "campuscart/client/dist/items/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "campuscart/client/dist/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "campuscart/client/dist/$1",
-      "check": true
-    },
-    {
-      "src": "/(.*)",
-      "dest": "campuscart/client/dist/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

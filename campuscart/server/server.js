@@ -16,12 +16,25 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow localhost, Vercel deployments, or requests without origin (curl, mobile)
+      callback(null, true);
+    },
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Ensure DB connection for serverless invocation
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('Database connection middleware error:', err.message);
+  }
+  next();
+});
 
 // Base API Routes
 app.get('/api/health', (req, res) => {
