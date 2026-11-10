@@ -325,17 +325,19 @@ const ProductDetails = () => {
 
           {/* Seller Information Card */}
           <div className="seller-card">
-            <h4>Seller Information</h4>
+            <div className="seller-header-flex">
+              <div className="seller-avatar-badge">
+                {sellerName.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '1.05rem', color: '#1E1B4B' }}>{sellerName}</h4>
+                <span style={{ fontSize: '0.85rem', color: '#6366F1', fontWeight: 600 }}>Verified Student Seller</span>
+              </div>
+            </div>
             <div className="seller-details">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <User size={16} color="#4F46E5" />
-                <span>
-                  Listed by: <strong>{sellerName}</strong>
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MapPin size={16} color="#4F46E5" />
-                <span>Campus: {sellerCampus}</span>
+                <span>Campus: <strong>{sellerCampus}</strong></span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Calendar size={16} color="#4F46E5" />
