@@ -14,7 +14,22 @@ import {
   AlertTriangle,
   PackageX,
   Trash2,
+  Edit3,
+  CheckCircle,
+  X,
 } from 'lucide-react';
+
+const CATEGORIES = [
+  'Books',
+  'Electronics',
+  'Calculators',
+  'Lab Equipment',
+  'Furniture',
+  'Stationery',
+  'Other',
+];
+
+const CONDITIONS = ['New', 'Like New', 'Good', 'Fair'];
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -24,8 +39,22 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [contactRevealed, setContactRevealed] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [updating, setUpdating] = useState(false);
+
+  // Edit Listing Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    price: '',
+    category: 'Books',
+    condition: 'Good',
+    description: '',
+    campus: '',
+    imageUrl: '',
+  });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -35,6 +64,15 @@ const ProductDetails = () => {
         const res = await productService.getProductById(id);
         if (res && res.data) {
           setProduct(res.data);
+          setEditFormData({
+            title: res.data.title || '',
+            price: res.data.price || '',
+            category: res.data.category || 'Books',
+            condition: res.data.condition || 'Good',
+            description: res.data.description || '',
+            campus: res.data.campus || '',
+            imageUrl: res.data.imageUrl || '',
+          });
         } else {
           setError('Product listing not found.');
         }
@@ -56,7 +94,7 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this listing?')) {
+    if (!window.confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
       return;
     }
 
@@ -65,8 +103,64 @@ const ProductDetails = () => {
       await productService.deleteProduct(id);
       navigate('/', { replace: true });
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete listing.');
+      setError(err.response?.data?.message || 'Failed to delete listing.');
       setDeleting(false);
+    }
+  };
+
+  const handleToggleStatus = async () => {
+    try {
+      setUpdating(true);
+      const newStatus = product.status === 'available' ? 'sold' : 'available';
+      const res = await productService.updateProduct(id, { status: newStatus });
+      if (res && res.data) {
+        setProduct(res.data);
+        setSuccessMessage(`Listing status updated to ${newStatus.toUpperCase()}`);
+        setTimeout(() => setSuccessMessage(''), 4000);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update listing status.');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleEditChange = (e) => {
+    setEditFormData({
+      ...editFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editFormData.title || !editFormData.description || editFormData.price === '') {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const numericPrice = parseFloat(editFormData.price);
+    if (isNaN(numericPrice) || numericPrice < 0) {
+      alert('Price must be a valid positive amount.');
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      const res = await productService.updateProduct(id, {
+        ...editFormData,
+        price: numericPrice,
+      });
+      if (res && res.data) {
+        setProduct(res.data);
+        setIsEditModalOpen(false);
+        setSuccessMessage('Listing details updated successfully!');
+        setTimeout(() => setSuccessMessage(''), 4000);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to save changes.');
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -98,7 +192,7 @@ const ProductDetails = () => {
     );
   }
 
-  if (error || !product) {
+  if (error && !product) {
     return (
       <div className="empty-state" style={{ maxWidth: '600px', margin: '4rem auto' }}>
         <PackageX size={48} className="empty-icon" color="#EF4444" />
@@ -116,7 +210,7 @@ const ProductDetails = () => {
 
   const isOwner =
     currentUser &&
-    product.seller &&
+    product?.seller &&
     (currentUser._id === product.seller._id || currentUser._id === product.seller);
 
   const sellerName = product.seller?.name || 'Fellow Student';
@@ -125,24 +219,64 @@ const ProductDetails = () => {
 
   return (
     <div style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {/* Top Action Bar */}
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <Link to="/" className="btn btn-secondary btn-sm" id="details-back-link">
           <ArrowLeft size={16} />
           Back to Marketplace
         </Link>
 
         {isOwner && (
-          <button
-            onClick={handleDelete}
-            className="btn btn-danger btn-sm"
-            disabled={deleting}
-            id="delete-listing-btn"
-          >
-            <Trash2 size={16} />
-            {deleting ? 'Deleting...' : 'Delete My Listing'}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleToggleStatus}
+              className={`btn btn-sm ${product.status === 'available' ? 'btn-secondary' : 'btn-primary'}`}
+              disabled={updating}
+              id="toggle-status-btn"
+              title="Toggle item availability status"
+            >
+              <CheckCircle size={15} />
+              {product.status === 'available' ? 'Mark as Sold' : 'Mark as Available'}
+            </button>
+
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="btn btn-secondary btn-sm"
+              disabled={updating}
+              id="edit-listing-btn"
+            >
+              <Edit3 size={15} />
+              Edit Listing
+            </button>
+
+            <button
+              onClick={handleDelete}
+              className="btn btn-danger btn-sm"
+              disabled={deleting}
+              id="delete-listing-btn"
+            >
+              <Trash2 size={15} />
+              {deleting ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         )}
       </div>
+
+      {/* Success Notification Banner */}
+      {successMessage && (
+        <div className="alert-box alert-success" style={{ marginBottom: '1.5rem', animation: 'fadeIn 0.2s ease-out' }}>
+          <CheckCircle2 size={18} color="#059669" />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
+      {/* Error Notification Banner */}
+      {error && product && (
+        <div className="alert-box alert-error" style={{ marginBottom: '1.5rem' }}>
+          <AlertTriangle size={18} />
+          <span>{error}</span>
+        </div>
+      )}
 
       <div className="details-container">
         {/* Product Image */}
@@ -260,6 +394,150 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Listing Modal (Full CRUD Support) */}
+      {isEditModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Edit Listing Details</h2>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setIsEditModalOpen(false)}
+                aria-label="Close modal"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label htmlFor="edit-title" className="form-label">Title *</label>
+                  <input
+                    id="edit-title"
+                    type="text"
+                    name="title"
+                    value={editFormData.title}
+                    onChange={handleEditChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="edit-price" className="form-label">Price (INR ₹) *</label>
+                    <input
+                      id="edit-price"
+                      type="number"
+                      name="price"
+                      min="0"
+                      value={editFormData.price}
+                      onChange={handleEditChange}
+                      className="form-input"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="edit-category" className="form-label">Category *</label>
+                    <select
+                      id="edit-category"
+                      name="category"
+                      value={editFormData.category}
+                      onChange={handleEditChange}
+                      className="form-select"
+                      required
+                    >
+                      {CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="edit-condition" className="form-label">Condition *</label>
+                    <select
+                      id="edit-condition"
+                      name="condition"
+                      value={editFormData.condition}
+                      onChange={handleEditChange}
+                      className="form-select"
+                      required
+                    >
+                      {CONDITIONS.map((cond) => (
+                        <option key={cond} value={cond}>{cond}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="edit-campus" className="form-label">Campus Location *</label>
+                    <input
+                      id="edit-campus"
+                      type="text"
+                      name="campus"
+                      value={editFormData.campus}
+                      onChange={handleEditChange}
+                      className="form-input"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="edit-imageUrl" className="form-label">Image URL *</label>
+                  <input
+                    id="edit-imageUrl"
+                    type="url"
+                    name="imageUrl"
+                    value={editFormData.imageUrl}
+                    onChange={handleEditChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="edit-description" className="form-label">Description *</label>
+                  <textarea
+                    id="edit-description"
+                    name="description"
+                    rows="4"
+                    value={editFormData.description}
+                    onChange={handleEditChange}
+                    className="form-textarea"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setIsEditModalOpen(false)}
+                  disabled={updating}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={updating}
+                  id="save-listing-changes-btn"
+                >
+                  {updating ? 'Saving Changes...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
