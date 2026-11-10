@@ -17,10 +17,16 @@ const CATEGORIES = [
 const CONDITIONS = ['New', 'Like New', 'Good', 'Fair'];
 
 const SUGGESTED_IMAGES = [
-  { label: 'Scientific Calculator', url: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=600&auto=format&fit=crop&q=80' },
-  { label: 'Engineering Textbook', url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80' },
-  { label: 'Electronics / Kit', url: 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=600&auto=format&fit=crop&q=80' },
-  { label: 'Study Table / Chair', url: 'https://images.unsplash.com/photo-1580481077197-987823b7493a?w=600&auto=format&fit=crop&q=80' },
+  { label: 'Casio Scientific Calculator', url: '/items/casio-fx991ex.jpg' },
+  { label: 'TI-84 Graphing Calculator', url: '/items/ti84-plus.jpg' },
+  { label: 'Engineering Textbook', url: '/items/engineering-mathematics.jpg' },
+  { label: 'Operating Systems Book', url: '/items/operating-system-concepts.png' },
+  { label: 'Arduino Uno Kit', url: '/items/arduino-uno-r3.jpg' },
+  { label: 'Digital Multimeter', url: '/items/digital-multimeter.jpg' },
+  { label: 'Ergonomic Study Chair', url: '/items/mesh-study-chair.jpg' },
+  { label: 'Mechanical Keyboard', url: '/items/mechanical-keyboard.jpg' },
+  { label: 'White Lab Coat', url: '/items/white-lab-coat.jpg' },
+  { label: 'Spiral Notebooks', url: '/items/spiral-notebooks.jpg' },
 ];
 
 const CreateListing = () => {
