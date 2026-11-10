@@ -41,6 +41,25 @@ const ProductCard = ({ product }) => {
         />
         <span className="product-card-category">{category}</span>
         <span className="product-card-condition">{condition}</span>
+        {product.status === 'sold' && (
+          <span
+            style={{
+              position: 'absolute',
+              bottom: '0.75rem',
+              left: '0.75rem',
+              backgroundColor: 'rgba(239, 68, 68, 0.95)',
+              color: '#FFFFFF',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              padding: '0.2rem 0.65rem',
+              borderRadius: '6px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            Sold
+          </span>
+        )}
       </div>
 
       <div className="product-card-body">

@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
 import SearchBar from '../components/SearchBar';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { Sparkles, PlusCircle, AlertTriangle, PackageOpen, ArrowDown } from 'lucide-react';
+import { Sparkles, PlusCircle, AlertTriangle, PackageOpen, ArrowDown, ShieldCheck, Zap, CheckCircle2 } from 'lucide-react';
 
 const Marketplace = () => {
   const [products, setProducts] = useState([]);
@@ -99,6 +99,21 @@ const Marketplace = () => {
               <PlusCircle size={18} />
               Sell an Item
             </Link>
+          </div>
+
+          <div className="hero-trust-row">
+            <div className="hero-trust-item">
+              <ShieldCheck size={16} color="#34D399" />
+              <span>Verified Student Community</span>
+            </div>
+            <div className="hero-trust-item">
+              <Zap size={16} color="#FBBF24" />
+              <span>Zero Fees & Direct Pickup</span>
+            </div>
+            <div className="hero-trust-item">
+              <CheckCircle2 size={16} color="#60A5FA" />
+              <span>Safe On-Campus Exchange</span>
+            </div>
           </div>
         </div>
       </section>
