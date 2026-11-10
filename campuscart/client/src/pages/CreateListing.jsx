@@ -247,19 +247,21 @@ const CreateListing = () => {
               <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
                 Quick suggestions (click to use sample photo):
               </span>
-              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.35rem' }}>
-                {SUGGESTED_IMAGES.map((img) => (
-                  <button
-                    key={img.label}
-                    type="button"
-                    onClick={() => handleSelectSuggestedImage(img.url)}
-                    className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem' }}
-                  >
-                    <ImageIcon size={12} />
-                    {img.label}
-                  </button>
-                ))}
+              <div className="suggested-image-chips">
+                {SUGGESTED_IMAGES.map((img) => {
+                  const isSelected = formData.imageUrl === img.url;
+                  return (
+                    <button
+                      key={img.label}
+                      type="button"
+                      onClick={() => handleSelectSuggestedImage(img.url)}
+                      className={`suggested-image-chip ${isSelected ? 'active' : ''}`}
+                    >
+                      <ImageIcon size={13} />
+                      {img.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
