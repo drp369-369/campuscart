@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "npm --prefix campuscart/client run build",
+    "db:show": "node campuscart/server/inspect_db.js",
     "dev:server": "npm --prefix campuscart/server run dev",
     "dev:client": "npm --prefix campuscart/client run dev",
     "seed": "npm --prefix campuscart/server run seed",
